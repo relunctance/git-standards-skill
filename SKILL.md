@@ -219,6 +219,8 @@ git cherry -v origin/main
 - [ ] 描述是否用中文、简洁明确？
 - [ ] 是否只做了一件事？（原子性）
 - [ ] 是否有不该提交的文件？（node_modules、.env、*.log）
+- [ ] **skill 项目**：commit 前运行 `readme-skill/scripts/check_readme.sh` 校验表格结构 + 徽章完整性
+- [ ] **任何 md 文件**：commit 前确认表格列数一致，无错位
 
 ## 忽略不该提交的文件
 
