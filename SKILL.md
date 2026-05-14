@@ -96,18 +96,62 @@ git push → 失败 → 检测错误类型 → 修复 → 重试
 
 ### 代理自动配置
 
-push 失败时自动执行（调用 github-push-solver）：
+push 失败时自动执行，**优先从 `.bashrc` 读取已有代理配置**：
 
 ```bash
-# 自动查找本地代理并配置 git 全局代理
-for port in 7890 7891 1080 8118 10808; do
-    if curl -s --connect-timeout 2 -x http://127.0.0.1:$port https://www.google.com > /dev/null 2>&1; then
-        git config --global http.proxy "http://127.0.0.1:$port"
-        git config --global https.proxy "http://127.0.0.1:$port"
-        echo "✅ 代理已配置: http://127.0.0.1:$port"
-        break
+# 1. 从 ~/.bashrc 读取现有代理配置
+detect_bashrc_proxy() {
+    # 匹配格式：export http_proxy=... / export HTTP_PROXY=... / export ALL_PROXY=...
+    local proxy
+    proxy=$(grep -E '^export\s+(http_proxy|HTTP_PROXY|https_proxy|HTTPS_PROXY|ALL_PROXY)=' ~/.bashrc 2>/dev/null | head -1 | cut -d'=' -f2 | tr -d '"' | tr -d "'")
+    if [ -n "$proxy" ]; then
+        echo "$proxy"
+        return 0
     fi
-done
+    return 1
+}
+
+# 2. 若 .bashrc 无配置，扫描常见端口
+scan_proxy_ports() {
+    for port in 7890 7891 1080 8118 10808; do
+        if curl -s --connect-timeout 2 -x http://127.0.0.1:$port https://www.google.com > /dev/null 2>&1; then
+            echo "http://127.0.0.1:$port"
+            return 0
+        fi
+    done
+    return 1
+}
+
+# 3. 应用代理
+PROXY=$(detect_bashrc_proxy) || PROXY=$(scan_proxy_ports)
+if [ -n "$PROXY" ]; then
+    git config --global http.proxy "$PROXY"
+    git config --global https.proxy "$PROXY"
+    echo "✅ 代理已配置: $PROXY"
+else
+    echo "⚠️  未找到可用代理，请手动配置"
+fi
+```
+
+### GitHub Token 自动配置
+
+push 失败认证问题时，检查 `.bashrc` 是否有 `gh_token` 或 `GITHUB_TOKEN`：
+
+```bash
+# 从 ~/.bashrc 读取 GitHub Token
+detect_gh_token() {
+    grep -E '^export\s+(gh_token|GITHUB_TOKEN|GH_TOKEN)=' ~/.bashrc 2>/dev/null | head -1 | cut -d'=' -f2 | tr -d '"' | tr -d "'"
+}
+
+TOKEN=$(detect_gh_token)
+if [ -n "$TOKEN" ]; then
+    # 写入 git credential helper
+    git config --global credential.helper store
+    echo "https://${TOKEN}@github.com" > ~/.git-credentials
+    echo "✅ GitHub Token 已配置"
+else
+    echo "⚠️  未找到 gh_token，请运行: gh auth login"
+fi
 ```
 
 ## 分支策略
