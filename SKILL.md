@@ -140,7 +140,7 @@ push 失败认证问题时，检查 `.bashrc` 是否有 `gh_token` 或 `GITHUB_T
 ```bash
 # 从 ~/.bashrc 读取 GitHub Token
 detect_gh_token() {
-    grep -E '^export\s+(gh_token|GITHUB_TOKEN|GH_TOKEN)=' ~/.bashrc 2>/dev/null | head -1 | cut -d'=' -f2 | tr -d '"' | tr -d "'"
+    grep -E '^export\s+(gh_token|GH_TOKEN|ghp_token|GHP_TOKEN|GITHUB_TOKEN)=' ~/.bashrc 2>/dev/null | head -1 | cut -d'=' -f2 | tr -d '"' | tr -d "'"
 }
 
 TOKEN=$(detect_gh_token)
