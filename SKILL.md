@@ -1,21 +1,10 @@
 ---
-name: git-standards
-description: Git 规范 skill — 标准化 commit、push、工作流规范，支持代理自动切换，强制所有改动即时提交
-description_zh: Git 规范 skill — 标准化 commit、push、工作流规范，支持代理自动切换，强制所有改动即时提交
-triggers:
-  - git commit 规范
-  - git push 失败
-  - GitHub 代理
-  - 提交规范
-  - git 工作流
-  - git commit message
-  - github push
-  - git 改动未提交
-category: devops
-author: relunctance
-created: 2026-05-08
-updated: 2026-05-08
+name: git-standards-skill
+description: 当需要 git commit 规范、push 失败处理、GitHub 代理配置、分支策略时使用。标准化 commit message 格式、push 失败自动修复代理、分支命名规范，强制所有改动即时 commit + push
 version: "1.0.0"
+author: relunctance
+license: MIT
+category: devops
 tags:
   - git
   - github
@@ -23,14 +12,16 @@ tags:
   - push
   - devops
   - standards
-platforms:
-  openclaw: true
-  claude_code: true
-  codex: true
-  hermes: true
+metadata:
+  hermes:
+    platforms:
+      claude_code: true
+      openclaw: true
+      hermes: true
+    related_skills: [github-push-solver-skill, skill-created]
 ---
 
-# git-standards
+# git-standards-skill
 
 GQL 团队的 Git 工作流规范 — 标准化 commit、push、branch 策略，支持代理自动切换，所有改动强制即时提交。
 
