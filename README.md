@@ -1,4 +1,6 @@
 # git-standards-skill
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)]()
+[![category](https://img.shields.io/badge/category-devops-blue.svg)]()
 
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](#)
 [![platforms](https://img.shields.io/badge/platforms-claude_code%20%7C%20openclaw%20%7C%20hermes-blue.svg)](#)
